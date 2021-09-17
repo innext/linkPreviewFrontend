@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 const axios = require('axios').default
-const dpEnd = "http://localhost:2221/dp"
-const ltEnd = "http://localhost:2221/lt"
+const dpEnd = "https://init-linkpreview.herokuapp.com/dp"
+const ltEnd = "https://init-linkpreview.herokuapp.com/lt"
 
 class App extends Component {
   constructor(props) {
