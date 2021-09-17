@@ -1,36 +1,72 @@
-import { Component } from "react"
+import React, { Component } from 'react'
 const axios = require('axios').default
-const backendURL = "http://localhost:2221/dp"
-const baseURL = "http://localhost:3000"
-const uri = {uri: "https://lj.disha.page/"}
+const dpEnd = "http://localhost:2221/dp"
+const ltEnd = "http://localhost:2221/lt"
 
-let headers = new Headers()
-            headers.append('Content-Type', 'application/json');
-            headers.append('Accept', 'application/json');
-            headers.append('Origin',baseURL)
-
-class indexdp extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        divs: []
+      uri: '',
+      divs: []
     }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmitDp = this.handleSubmitDp.bind(this)
+    this.handleSubmitLt = this.handleSubmitLt.bind(this)
   }
 
-  async componentDidMount() {
-    let returnDiv = await axios.post(backendURL, uri, headers)
+  handleChange(event) {
+    this.setState({ uri: event.target.value})
+  }
+
+  async handleSubmitDp(event) {
+    event.preventDefault()
+    const uri = {
+      uri: this.state.uri
+    }
+    let returnDiv = await axios.post(dpEnd, uri)
+    this.setState({
+      divs: returnDiv.data.page
+    })
+  }
+
+  async handleSubmitLt(event) {
+    event.preventDefault()
+    const uri = {
+      uri: this.state.uri
+    }
+    let returnDiv = await axios.post(ltEnd, uri)
     this.setState({
       divs: returnDiv.data.page
     })
   }
 
   render() {
-    return(
-      //The term dangerously is used here to notify that it will be vulnerable to cross-site scripting attacks (XSS).
-      <div dangerouslySetInnerHTML={{__html: this.state.divs}}></div>
+    return (
+      <div>
+        <h5>Generally, res may take up to 3 sec</h5>
+        <h6>link should be for disha page</h6>
+        <form onSubmit={this.handleSubmitDp}>
+          <label>URI:
+            <input name="uri" onChange={this.handleChange} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>        <hr />
+
+        <h6>link should be for link tree</h6>
+        <form onSubmit={this.handleSubmitLt}>
+          <label>URI:
+            <input name="uri" onChange={this.handleChange} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
+        <hr />
+
+        <div dangerouslySetInnerHTML={{__html: this.state.divs}}></div>
+      </div>
+      
     )
   }
-
 }
+export default App
 
-export default indexdp;
